@@ -13,9 +13,18 @@
       </template>
     </van-cell>
   </van-cell-group>
+
+  <!-- 底部播放器 -->
+  <van-sticky :offset-bottom="50" position="bottom">
+    <div class="play">
+      <!-- <List></List> -->
+      <play />
+    </div>
+  </van-sticky>
 </template>
 
 <script lang="ts" setup>
+import play from "@/components/common/play/play.vue";
 import { storeToRefs } from "pinia";
 import { onMounted } from "vue";
 import topListStore from "@/stores/main/home/c-cnps/top-list";
@@ -58,5 +67,13 @@ onMounted(() => {
   & p {
     margin-left: 5px;
   }
+}
+.play {
+  width: 100%;
+  height: 50px;
+  bottom: 5px;
+  background-color: #39a9ed;
+  position: fixed;
+  bottom: 0px;
 }
 </style>

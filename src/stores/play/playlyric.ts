@@ -116,41 +116,43 @@ const playSongLyricStore = defineStore("lyric", {
       //获取歌曲信息
       const { songs } = await getPlayInfoService(id);
       //获取歌词信息
+
       const { lrc } = await getPlayLyricService(id);
+
       const { lyric } = lrc;
       this.lyric = lyric;
-      this.lyricState.sections = parseLyric(lyric);
-      console.log("这是歌词数据", this.lyricState.sections);
+      this.sections = parseLyric(lyric);
+      console.log("这是歌词数据", this.sections);
     },
-    updateCurrentLyricLine(currentTime: number) {
-      let currentLineIndex = -1;
-      let currentLyricLine = "";
-      let nextLyricLine = "";
+    // updateCurrentLyricLine(currentTime: number) {
+    //   let currentLineIndex = -1;
+    //   let currentLyricLine = "";
+    //   let nextLyricLine = "";
 
-      for (let i = this.lyricState.sections!.length - 1; i >= 0; i--) {
-        const section = this.lyricState.sections![i];
-        if (currentTime >= section.startTime) {
-          for (let j = section.lines.length - 1; j >= 0; j--) {
-            const line = section.lines[j];
-            if (currentTime >= line.time) {
-              currentLineIndex = j;
-              currentLyricLine = line.text;
-              if (j + 1 < section.lines.length) {
-                nextLyricLine = section.lines[j + 1].text;
-              }
-              break;
-            }
-          }
-          break;
-        }
-      }
-      console.log("这是歌词相关数据", currentLineIndex);
-      console.log("这是歌词相关数据", currentLyricLine);
-      console.log("这是歌词相关数据", nextLyricLine);
-      this.lyricState.currentLineIndex = currentLineIndex;
-      this.lyricState.currentLyricLine = currentLyricLine;
-      this.lyricState.nextLyricLine = nextLyricLine;
-    },
+    //   for (let i = this.lyricState.sections!.length - 1; i >= 0; i--) {
+    //     const section = this.lyricState.sections![i];
+    //     if (currentTime >= section.startTime) {
+    //       for (let j = section.lines.length - 1; j >= 0; j--) {
+    //         const line = section.lines[j];
+    //         if (currentTime >= line.time) {
+    //           currentLineIndex = j;
+    //           currentLyricLine = line.text;
+    //           if (j + 1 < section.lines.length) {
+    //             nextLyricLine = section.lines[j + 1].text;
+    //           }
+    //           break;
+    //         }
+    //       }
+    //       break;
+    //     }
+    //   }
+    //   console.log("这是歌词相关数据", currentLineIndex);
+    //   console.log("这是歌词相关数据", currentLyricLine);
+    //   console.log("这是歌词相关数据", nextLyricLine);
+    //   this.lyricState.currentLineIndex = currentLineIndex;
+    //   this.lyricState.currentLyricLine = currentLyricLine;
+    //   this.lyricState.nextLyricLine = nextLyricLine;
+    // },
   },
 });
 

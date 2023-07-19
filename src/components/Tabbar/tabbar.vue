@@ -4,9 +4,9 @@
     <router-view></router-view>
 
     <van-sticky :offset-bottom="50" position="bottom">
-      <div class="play" @click="toPlayPage">
+      <div class="play">
         <!-- <List></List> -->
-        <play />
+        <play @click="toPlayPage" />
       </div>
     </van-sticky>
 

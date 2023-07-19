@@ -19,7 +19,6 @@
       </div>
       <div class="top-buttom">
         <van-text-ellipsis
-          rows="3"
           :content="playlist.description"
           expand-text="展开"
           collapse-text="收起"
@@ -42,14 +41,22 @@
       </van-list>
     </div>
   </div>
+  <!-- 底部播放器 -->
+  <van-sticky :offset-bottom="50" position="bottom">
+    <div class="play">
+      <play @click="toPlayPage" />
+    </div>
+  </van-sticky>
 </template>
 
 <script lang="ts" setup>
+import play from "@/components/common/play/play.vue";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import { onMounted } from "vue";
 import Nav from "../nav/nav.vue";
 import playInfoStore from "@/stores/play/play";
+import router from "@/router";
 const loading = ref(true);
 import playlistInfoStore from "@/stores/playlist/playlist";
 
@@ -61,6 +68,9 @@ const { getPlayInfo } = playStore();
 
 function handlePlay(id: number) {
   getPlayInfo(id);
+}
+function toPlayPage() {
+  router.push("/play-page");
 }
 onMounted(() => {
   loading.value = false;
@@ -123,5 +133,13 @@ onMounted(() => {
   & p {
     margin: 10px;
   }
+}
+.play {
+  width: 100%;
+  height: 50px;
+  bottom: 5px;
+  background-color: #39a9ed;
+  position: fixed;
+  bottom: 0px;
 }
 </style>

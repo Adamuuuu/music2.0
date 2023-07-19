@@ -8,18 +8,22 @@
     </div>
     <div class="right">
       <!-- 上一首 -->
-      <iconPark :icon="GoStart" size="32" @click="handleprev()"></iconPark>
+      <iconPark :icon="GoStart" size="32" @click.stop="handleprev()"></iconPark>
       <!-- 播放 -->
       <iconPark
         :icon="isPause ? PauseOne : Play"
         size="32"
-        @click="handletogglePlay"
+        @click.stop="handletogglePlay"
       ></iconPark>
       <!-- 下一首 -->
-      <iconPark :icon="GoEnd" size="32" @click="handlenext()"></iconPark>
+      <iconPark :icon="GoEnd" size="32" @click.stop="handlenext()"></iconPark>
 
       <!-- 播放列表 -->
-      <iconPark :icon="MusicList" size="32" @click="showBottom = !showBottom">
+      <iconPark
+        :icon="MusicList"
+        size="32"
+        @click.stop="showBottom = !showBottom"
+      >
       </iconPark>
       <van-popup
         v-model:show="showBottom"
@@ -27,19 +31,7 @@
         :style="{ height: '30%' }"
       >
         <van-list>
-          <van-cell
-            v-for="item in list"
-            :key="item"
-            :title="item.songsname"
-            @click="
-              handlePlay(
-                item.player,
-                item.songsname,
-                item.list_url,
-                item.pic_url
-              )
-            "
-          >
+          <van-cell v-for="item in list" :key="item" :title="item.songsname">
             {{ item.player }}
           </van-cell>
         </van-list>
@@ -49,38 +41,59 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watchEffect, watch } from "vue";
 import iconPark from "@/components/common/iconPark.vue";
 import { GoEnd, GoStart, MusicList, PauseOne, Play } from "@icon-park/vue-next";
 import { storeToRefs } from "pinia";
 
 import playInfoStore from "@/stores/play/play";
 
-const { isPause, songs, list, index } = storeToRefs(playInfoStore());
-const { next, prev, togglePlay, playSong } = playInfoStore();
+const { currentSongs, list, index, currList_url, isPause, audio } = storeToRefs(
+  playInfoStore()
+);
+const { next, prev, togglePlay } = playInfoStore();
 const showBottom = ref(false);
+// const audio = ref(new Audio());
+watch(currList_url, () => {
+  console.log("回调函数执行成功");
+  audio.value.load();
+  audio.value.src = currList_url.value;
+  isPause.value = true;
+  audio.value.play();
+
+  if (audio.value.ended) {
+    next();
+  }
+});
+
+//控制播放暂停
+
+//监听时间更新
+// watchEffect(() => {
+//   audio.value.addEventListener("timeupdate", () => {
+//     console.log(audio.value.currentTime);
+//   });
+// });
 function handleprev() {
   prev();
+  // audio.value.src = currList_url.value;
 }
 function handletogglePlay() {
   togglePlay();
+  if (isPause.value) {
+    audio.value.play();
+  } else {
+    audio.value.pause();
+  }
 }
 function handlenext() {
   next();
+  // audio.value.src = currList_url.value;
 }
-
-function handlePlay(
-  player: string,
-  songsname: string,
-  url: string,
-  pic_url: string
-) {
-  playSong(player, songsname, url, pic_url);
-}
-// 通过 actions 属性来定义菜单选项
 
 const currentSong = computed(() => {
   console.log("计算属性绑定成功");
+
   return list.value[index.value];
 });
 </script>
